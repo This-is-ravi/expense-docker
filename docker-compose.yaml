@@ -1,0 +1,38 @@
+#version: '3.8'
+name: expense
+networks: #connects the container to an internal docker network
+  default:
+    name: expense
+volumes:  #volume creation
+  mysql:
+    #external: true # if true, you need to create manually
+       # docker volume create myqsl
+services:
+  mysql:
+    #image: mysql:v1.0
+    image: joindevops/mysql:v1.0  #image that wil be pulled and runed as container
+    container_name: mysql # --name mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=ExpenseApp@1
+      - MYSQL_USER=expense
+      - MYSQL_PASSWORD=ExpenseApp@1
+      - MYSQL_DATABASE=transactions
+    volumes: #create storage on host machine for /var/lib/mysql , volume mounting
+    - source: mysql #host filepath 
+      target: /var/lib/mysql  #container filepath
+      type: volume # -v volume-name:/path/in/container
+  backend:
+    #image: backend:v1.0
+    image: joindevops/backend:v1.0
+    container_name: backend
+    command: sh -c "sleep 20 && node /opt/server/index.js"  #after mysql container starts,keep delay to run BE
+    depends_on: 
+    - mysql
+  frontend:
+    #image: frontend:v1.0
+    image: joindevops/frontend:v1.0
+    container_name: frontend
+    depends_on:
+    - backend
+    ports:
+    - "80:80"

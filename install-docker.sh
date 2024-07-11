@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # installing docker CE in the server
 #check whether root user or not
 R="\e[31m"   #red colour

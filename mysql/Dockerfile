@@ -1,3 +1,4 @@
+#mysql image
 FROM mysql:8.0
 # not a human, only for system
 #RUN adduser -r expense
